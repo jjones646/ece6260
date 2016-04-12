@@ -16,5 +16,6 @@ function y = makeChirp(freqCarrier,freqCenter,span,fs)
     tt = 0:1/ip.Results.fs:2*tf; % time vector
     xtal = ip.Results.span*cos(2*pi*ip.Results.freqCarrier*tt);
     theta = 2*pi*(ip.Results.freqCenter*tt + xtal);
-    y = cos(theta); % the last component in equation
+    
+    y = cos(theta);
 end
