@@ -1,7 +1,7 @@
 function message = demorse(x)
     % Decode a given morse code audio signal
 
-    visOn = 0;
+    visOn = 1;
     threshold = .025;
 
     x = abs(x); % half-wave rectify x
@@ -20,7 +20,7 @@ function message = demorse(x)
        % middle subplot
        subplot(3,1,2);
        plot(y);
-       title('HWR + Slow-wave Filter -> Envelope');
+       title('HWR + Slow-wave Filter');
        grid on, axis tight, hold on
        % bottom subplot
        subplot(3,1,3);
