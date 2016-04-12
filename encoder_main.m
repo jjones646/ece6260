@@ -16,7 +16,7 @@ addpath('includes');
 
 %% Signal Frequency Segmentation
 % MLK's speech
-x1 = fftfilter(x, fs, 20, 3800);
+x1 = fftfilter(x, fs, 0, 3800);
 
 % Morse pulse
 x2 = fftfilter(x, fs, 3800, 4100);
@@ -35,10 +35,21 @@ xrec = x1 + x2 + x3 + x4 + x5;
 
 %% SQNR calculation
 err = x - xrec;
+clearvars xrec % don't keep this in memory
 sqnr = 10 * log10(norm(x)^2/norm(err)^2);
 
 % display the SQNR in the console
 fprintf('SQNR:\t%0.3f dB\n',sqnr);
+
+%% Save the filtered sections as a struct variable
+s.speech = x1;
+s.morse = x2;
+s.midNoise = x3;
+s.chirp = x4;
+s.highNoise = x5;
+orig = x;
+% save to file
+save('signal_sections.mat','s','orig','fs');
 
 %% Compare with reconstructed signal
 figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen

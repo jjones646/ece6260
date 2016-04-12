@@ -1,4 +1,4 @@
-function [ y ] = fftfilter( x, Fs, flb, fub )
+function [y] = fftfilter(x, Fs, flb, fub)
 % fftfilter: An FFT filter, same as Adobe Audition's FFT filter
 % Input:
 %   x: the orignal to be filtered
@@ -8,7 +8,8 @@ function [ y ] = fftfilter( x, Fs, flb, fub )
 % Output:
 %   y: the filtered signal
 
-flb = max(0, flb); fub = min(Fs/2, fub);
+flb = max(0, flb);
+fub = min(Fs/2, fub);
 X = fft(x);
 X = [X; X(1)]; % Add a padding at the last which corresponds to negtive 0 freq
 f = Fs/length(x) * (0:length(x)-1);
@@ -23,6 +24,5 @@ X(muteindices) = 0; % mute the filtered band
 X = X(1:end-1); % throw the padding
 
 y = ifft(X); % Take the inverse transform
-
 end
 
