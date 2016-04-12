@@ -63,6 +63,8 @@ set(h,'Color',[0 0 1 .25]);
 subt = get(gca,'Title');
 subt.String = 'Power Spectral Density of Original Signal';
 set(gca,'Title',subt);
+% add a legend to the top subplot
+legend('Original Signal');
 % get the y axis limits for the top subplot so we can make both
 % subplot axes equal
 y_limits = get(gca,'ylim');
@@ -88,6 +90,6 @@ set(h,'Color',[1 .75 0 1]);
 subt = get(gca,'Title');
 subt.String = 'Power Spectral Density of Filtered Sections';
 set(gca,'Title',subt);
-% add a legend to the bottom plot
-legend('Speech','Moorse Code','Mid Freq. Noise','Chirp','High Freq. Noise')
+% add a legend to the bottom subplot
+legend('Speech','Moorse Code','Mid Freq. Noise','Chirp','High Freq. Noise');
 set(gca,'ylim',y_limits);
