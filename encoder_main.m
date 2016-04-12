@@ -37,13 +37,46 @@ xrec = x1 + x2 + x3 + x4 + x5;
 err = x - xrec;
 sqnr = 10 * log10(norm(x)^2/norm(err)^2);
 
+% display the SQNR in the console
+fprintf('SQNR:\t%0.3f dB\n',sqnr);
+
 %% Compare with reconstructed signal
-figure('units','normalized','outerposition',[0 0 1 1])
-psdest = psd(spectrum.periodogram,x,'Fs',fs,'NFFT',length(x));
-h = plot(psdest);
-set(h,'Color',[0 0 1 0.25]);
-hold on
-psdest = psd(spectrum.periodogram,xrec,'Fs',fs,'NFFT',length(xrec));
-h = plot(psdest);
-set(h,'Color',[1 0 0 0.075]);
-axis tight
+figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
+
+% show the original signal's power spectrum in its own subplot
+pxx = psd(spectrum.periodogram,x,'Fs',fs,'NFFT',length(x));
+subplot(2,1,1);
+h = plot(pxx); axis tight
+set(h,'Color',[0 0 1 .25]);
+% set the top subplot's title
+subt = get(gca,'Title');
+subt.String = 'Power Spectral Density of Original Signal';
+set(gca,'Title',subt);
+% get the y axis limits for the top subplot so we can make both
+% subplot axes equal
+y_limits = get(gca,'ylim');
+
+% show the power spectrum of each filtered section in a different subplot
+pxx = psd(spectrum.periodogram,x1,'Fs',fs,'NFFT',length(x1));
+subplot(2,1,2);
+h = plot(pxx); hold on
+set(h,'Color',[.8 0 0 1]);
+pxx = psd(spectrum.periodogram,x2,'Fs',fs,'NFFT',length(x2));
+h = plot(pxx);
+set(h,'Color',[0 .8 0 1]);
+pxx = psd(spectrum.periodogram,x3,'Fs',fs,'NFFT',length(x3));
+h = plot(pxx);
+set(h,'Color',[.5 0 .5 1]);
+pxx = psd(spectrum.periodogram,x4,'Fs',fs,'NFFT',length(x4));
+h = plot(pxx);
+set(h,'Color',[0 .8 .8 1]);
+pxx = psd(spectrum.periodogram,x5,'Fs',fs,'NFFT',length(x5));
+h = plot(pxx);
+set(h,'Color',[1 .75 0 1]);
+% set the bottom subplot's title
+subt = get(gca,'Title');
+subt.String = 'Power Spectral Density of Filtered Sections';
+set(gca,'Title',subt);
+% add a legend to the bottom plot
+legend('Speech','Moorse Code','Mid Freq. Noise','Chirp','High Freq. Noise')
+set(gca,'ylim',y_limits);
