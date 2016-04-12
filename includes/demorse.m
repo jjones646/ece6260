@@ -177,7 +177,6 @@ function message = demorse(x)
     % compare tokens to tables
     out1 = repmat('_',1,length(tokens4));
     for j = 1:length(tokens4)
-        % zero pad temp_tok
         temp_tok = [tokens4{j}; zeros(6 - length(tokens4{j}), 1)];
         for k = 1:length(code)
             if (temp_tok == [code{k}'; zeros(6 - length(code{k}), 1)]);
