@@ -1,8 +1,8 @@
-function outstring = demorse(x)
+function message = demorse(x)
     % Decode a given morse code audio signal
 
-    visOn = 1;
-    threshold = 0.05;
+    visOn = 0;
+    threshold = .025;
 
     x = abs(x); % half-wave rectify x
     y = filter(ones(1,20)/20,1,x); % slow-wave filter
@@ -27,8 +27,6 @@ function outstring = demorse(x)
        title('Digitized Morse Signal');
        grid on, axis tight, hold on     
        area(X);
-%       childs = get(gca,'Children');
-       set(gca,'Color',[0 .8 .8 .25]);
        % fixup axis on bottom subplot
        y_limits = get(gca,'ylim');
        y_limits = [0,(1.08*y_limits(2))];
@@ -80,15 +78,14 @@ function outstring = demorse(x)
     % can drop little spaces, b/c they don't matter when parsing;
     tokens2(tokens2 == -1) = [];
     tokens3 = tokens2;
-    start_idx = 1;
-
-    toparse = find(tokens3(start_idx:end) == -2);
+    
+    ix = 1;
+    toparse = find(tokens3(ix:end) == -2);
     tokens4 = cell(length(toparse));
     for j=1:length(toparse)
        a = toparse(j);
-       temp = tokens3(start_idx:a-1);
-       tokens4{j} = temp;
-       start_idx = a+1;
+       tokens4{j} = tokens3(ix:a-1);
+       ix = a+1;
     end
     
     % now tokens4 is de-codeable tokens... proceed to setup lookups letters
@@ -118,13 +115,11 @@ function outstring = demorse(x)
     code{24} = [2 1 1 2];
     code{25} = [2 1 2 2];
     code{26} = [2 2 1 1];
-
     % punct
     code{27} = [1 2 1 2 1 2];
     code{28} = [2 2 1 1 2 2];
     code{29} = [1 1 2 2 1 1];    
     code{30} = [2 1 1 2 1];
-
     % numbers
     code{31} = [1 2 2 2 2];
     code{32} = [1 1 2 2 2];
@@ -180,25 +175,17 @@ function outstring = demorse(x)
     decode{40} = '0';
 
     % compare tokens to tables
-    out1 = [];
+    out1 = repmat('_',1,length(tokens4));
     for j = 1:length(tokens4)
-        %zero pad temp_tok
+        % zero pad temp_tok
         temp_tok = [tokens4{j}; zeros(6 - length(tokens4{j}), 1)];
         for k = 1:length(code)
             if (temp_tok == [code{k}'; zeros(6 - length(code{k}), 1)]);
                 out1(j) = char(decode{k});
             end
         end
-        % if didn't find a match
-        if isempty(out1(j))
-            out1(j) = '_';
-        end
     end
 
-    % semi-prettify
-    outstring = 32*ones(2*length(out1),1);
-    outstring(2:2:end) = out1;
-    outstring = char(outstring');
-
-    display(outstring);
+    % construct the final message
+    message = char(out1);
 end
