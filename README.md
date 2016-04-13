@@ -1,6 +1,6 @@
 # Data Compression & Modeling :speaker:
 
-This project is the analysis and compression of an audio signal, [Signal.wav](https://raw.githubusercontent.com/jjones646/ece6260/master/includes/Signal.wav). Most browsers will natively support playing the [mp3 version](https://raw.githubusercontent.com/jjones646/ece6260/master/includes/Signal.mp3) for reference of what this signal sounds like.
+This project is the analysis and compression of an audio signal, [Signal.wav](https://raw.githubusercontent.com/jjones646/ece6260/master/includes/Signal.wav). Most browsers will natively support playing the [mp3 version](https://raw.githubusercontent.com/jjones646/ece6260/master/doc/Signal.mp3) for reference of what this signal sounds like.
 
 
 ## Prerequisites
