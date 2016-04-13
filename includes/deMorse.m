@@ -1,5 +1,5 @@
 function [message,Y] = deMorse(x,varargin)
-    % Decode a given morse code audio signal.
+% Decode a given morse code audio signal.
     
     visOn = 0;
     if nargin < 2
@@ -15,8 +15,8 @@ function [message,Y] = deMorse(x,varargin)
     X = y > threshold;
     
     % the vector that we return back
-    Y = mat2gray(y);
-    %Y = mat2gray(X);
+    %Y = mat2gray(y);
+    Y = mat2gray(X);
     
     if visOn
        figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen

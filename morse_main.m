@@ -35,8 +35,6 @@ title('{\bfHistogram of Morse Code Transitions Timings}');
 ylabel('Number of Transitions');
 xlabel('Samples Until Next Transition');
 
-% return
-
 %% Reconstruct the morse code beeps centered at 4kHz
 figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
 
@@ -55,3 +53,12 @@ xlabel('Time (s)');
 
 pyy = psd(spectrum.periodogram,sig,'Fs',fs,'NFFT',length(sig));
 h = plot(pyy); hold on
+
+% regenerate the signal
+morsecode = makeMorse(msg);
+
+% show some timing stats
+fprintf('Reconstructed Length: %0.2f s\n',length(morsecode)/fs);
+
+% play the regenerated message
+soundsc(morsecode,fs);
