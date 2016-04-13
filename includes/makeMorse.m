@@ -19,16 +19,19 @@ function morse = makeMorse(varargin)
     fs = 16000;
     freq = 4000;
 
-    tt = 0:1/fs:(800/fs);
+    tt = 0:1/fs:(740/fs);
     Dit = cos(2*pi*freq.*tt);
     Dit = Dit';
+    
+    % 2276
+    % 2332
 
-    ttt = 0:1/fs:(2400/fs);
+    ttt = 0:1/fs:(2332/fs);
     Dah = cos(2*pi*freq.*ttt);
     Dah = Dah';
 
-    ssp = zeros(1,length(Dit));
-    lsp = zeros(1,2*length(Dah));
+    ssp = zeros(1,length(Dit)+50);
+    lsp = zeros(1,length(Dah)+50);
     ssp = ssp';
     lsp = lsp';
 
@@ -94,6 +97,6 @@ function morse = makeMorse(varargin)
     if exist('file','var')
         audioplayer(morsecode,fs,16,file);
     else
-        morse = morsecode;
+        morse = morsecode';
     end
 end

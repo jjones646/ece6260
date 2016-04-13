@@ -3,7 +3,8 @@
 %  April 17, 2016
 
 %% Setup environment
-close all; clear all; clc
+close all; clc;
+% clear all;
 
 % cd into the directory where this script is
 cd(fileparts(mfilename('fullpath')));

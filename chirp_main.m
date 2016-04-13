@@ -3,7 +3,8 @@
 %  April 17, 2016
 
 %% Setup environment
-close all; clear all; clc
+close all; clc;
+% clear all;
 
 % cd into the directory where this script is
 cd(fileparts(mfilename('fullpath')));
@@ -16,6 +17,7 @@ addpath('includes');
 
 %% Create the chirp signal
 cc = makeChirp(0.5,6000,100,fs);
+cc = fftFilter(cc,fs,5500,6500);
 
 %% Show some plots for comparison
 figure('units','normalized','outerposition',[0 0 1 1])
@@ -33,11 +35,14 @@ set(h,'Color',[1 0 0 0.15]);
 axis tight
 
 %% Play the filtered chirp for 2 periods
-x2 = highhighFilter(x);
-x2 = x2(1:4*fs);
-soundsc(x2,fs);
+load('signal_sections.mat');
+x2 = s.chirp(1:4*fs);
+player1 = audioplayer(x2,fs);
+% play(player1);
+
 % wait for it to finish playing
 pause(5);
 
-%% Play the reconstructed chirp
-soundsc(cc,fs);
+%% Play the reconstructed chirp for 5 periods
+player2 = audioplayer(repmat(cc,1,5),fs);
+% play(player2);

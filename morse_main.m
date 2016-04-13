@@ -1,9 +1,10 @@
-%% ECE 6260 - Morse Decoding & Reconstruction
+%% ECE 6260 - Morse Code Decoding & Reconstruction
 %  Yifei Fan & Jonathan Jones
 %  April 17, 2016
 
 %% Setup environment
-close all; clear all; clc
+close all; clc;
+% clear all;
 
 % cd into the directory where this script is
 cd(fileparts(mfilename('fullpath')));
@@ -35,11 +36,16 @@ title('{\bfHistogram of Morse Code Transitions Timings}');
 ylabel('Number of Transitions');
 xlabel('Samples Until Next Transition');
 
+% bb = diff(aa);
+% bbi = find(abs(2330-bb) < 500);
+% bb = bb(bbi)
+% histogram(bb,30); grid on;
+% return
+
 %% Reconstruct the morse code beeps centered at 4kHz
 figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
 
 tt = linspace(0,length(yy)/fs,length(yy));
-% sig = yy .* cos(2*pi*4000*tt');
 sig = yy;
 
 Nx = length(sig);
@@ -51,14 +57,16 @@ nff = max(512,2^nextpow2(nsc));
 title('{\bfSpectrogram of Reconstructed Morse Code Beeps}');
 xlabel('Time (s)');
 
-pyy = psd(spectrum.periodogram,sig,'Fs',fs,'NFFT',length(sig));
+% regenerate the signal
+morse = makeMorse(msg);
+morse = morsePassFilter(morse);
+
+pyy = psd(spectrum.periodogram,morse,'Fs',fs,'NFFT',length(morse));
 h = plot(pyy); hold on
 
-% regenerate the signal
-morsecode = makeMorse(msg);
-
 % show some timing stats
-fprintf('Reconstructed Length: %0.2f s\n',length(morsecode)/fs);
+fprintf('Reconstructed Length: %0.2f s\n',length(morse)/fs);
 
 % play the regenerated message
-soundsc(morsecode,fs);
+player = audioplayer(morse,fs);
+% play(player);
