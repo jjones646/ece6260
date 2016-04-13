@@ -27,11 +27,16 @@ To encode the [Signal.wav](https://raw.githubusercontent.com/jjones646/ece6260/m
 
 ## Algorithm Approach
 
+### Conceptual
+
 |Signal Segmentation|
 |:---|
 |Bandpass filters are used to divide [Signal.wav](https://raw.githubusercontent.com/jjones646/ece6260/master/includes/Signal.wav) into manageable sections. The `fftFilter` function in [fftFilter.m](./includes/fftFilter.m) is used for the initial segmentation. A relevant compression technique is then applied for each section, which are shown below.|
 |![](./doc/filtered-sections.png)|
 |The signal is broken down into these 5 parts:<ul><li>Speech</li><li>Morse Code</li><li>Mid. Freq. Noise</li><li>Chirp</li><li>High Freq. Noise</li></ul>|
+
+
+### Section Implementations
 
 |Speech|
 |:---|
@@ -60,6 +65,6 @@ To encode the [Signal.wav](https://raw.githubusercontent.com/jjones646/ece6260/m
 
 |Generated Sections|
 |:---|
-|The upper frequencies for the graphs shown below were generated from structural parameters.|
+|The upper frequencies for the graphs shown below were generated from structural parameters. See [testbench.m](./testbench.m) for implementation details.|
 |![](./doc/testbench-results1.png)|
 
