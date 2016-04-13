@@ -1,14 +1,22 @@
-function message = demorse(x)
-    % Decode a given morse code audio signal
-
-    visOn = 1;
-    threshold = .025;
-
+function [message,Y] = deMorse(x,varargin)
+    % Decode a given morse code audio signal.
+    
+    visOn = 0;
+    if nargin < 2
+        threshold = .025;
+    else
+        threshold = varargin{1};
+    end
+    
     x = abs(x); % half-wave rectify x
-    y = filter(ones(1,20)/20,1,x); % slow-wave filter
+    y = filter(ones(1,30)/30,1,x); % slow-wave filter
     
     % threshold the limits for digital representation
     X = y > threshold;
+    
+    % the vector that we return back
+    Y = mat2gray(y);
+    %Y = mat2gray(X);
     
     if visOn
        figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
@@ -33,63 +41,95 @@ function message = demorse(x)
        set(gca,'ylim',y_limits);
     end
 
-    %zero pad z so we always start with an onset
+    % zero pad z so we always start with an onset
     X = [zeros(10,1); X];
 
-    % id tones/spaces   -----------------------
-    % --> find changes between 0/1 and 1/0
-
-    b = diff(X);
     % 1: change from 1 to 0
     % 0: no change
     % -1: change from 0 to 1
-
-    c = b(b~=0);
-    c2 = find(b~=0);
-
-    tokens = -c .* diff([0; c2]);
-    % value == length of token
-    % sign == tone/space
-
-    % id shorts/longs  -----------------------
-
-    % since short/long should be bi-modal dist, a regular average should give
-    % us a good cutoff point to distinguish between the two? (assuming equal
-    % counts of short and long...)
-    % use mean as simple cutoff point; smarter algorithms can get smarter about
-    % this classification if they want to.
-
-    % 1: short, 2: long, +: tone, -: space
-    tokens2 = tokens;
-
-    % cutoff tones, cutoff spaces;
-    cut_t = mean(tokens2(tokens2>0));
-    cut_s = mean(tokens2(tokens2<0));
-
-    tokens2(tokens > 0 & tokens < cut_t) = 1;
-    tokens2(tokens > 0 & tokens > cut_t) = 2;
-    tokens2(tokens < 0 & tokens > cut_s) = -1;
-    tokens2(tokens < 0 & tokens < cut_s) = -2;
-
-    % now tokens 2 is a string of -1s, -2s, 1s, 2s, can trim first known space;
-    % put final endstop at end
-    tokens2 = [tokens2(2:end); -2];
-
-    % can drop little spaces, b/c they don't matter when parsing;
-    tokens2(tokens2 == -1) = [];
-    tokens3 = tokens2;
+    b = diff(X);
+    c_i = find(b~=0);
+    c = b(c_i);
     
-    ix = 1;
-    toparse = find(tokens3(ix:end) == -2);
-    tokens4 = cell(length(toparse));
-    for j=1:length(toparse)
-       a = toparse(j);
-       tokens4{j} = tokens3(ix:a-1);
-       ix = a+1;
+    if ~numel(c)
+        [message,Y] = deMorse(x, abs(threshold-0.0075));
+        return
     end
     
-    % now tokens4 is de-codeable tokens... proceed to setup lookups letters
-    code{1} = [1 2 ];
+    tokens = -c .* diff([0; c_i]);
+    % value == length of token
+    % sign == tone/space
+    
+    % cutoff tones, cutoff spaces;
+    cut_t = mean(tokens(tokens>0));
+    cut_s = mean(tokens(tokens<0));
+
+    % set the tokens for the tones in the signal
+    hh1 = (find(tokens > 0 & tokens < cut_t));
+    hh2 = (find(tokens > 0 & tokens > cut_t));
+    ll1 = (find(tokens < 0 & tokens > cut_s));
+    ll2 = (find(tokens < 0 & tokens < cut_s));
+    ww1 = (find(tokens < 0 & tokens < 1.5*cut_s));
+    tokens(hh1) = 1; tokens(hh2) = 2;
+    tokens(ll1) = -1; tokens(ll2) = -2;
+    tokens(ww1) = -3;
+    
+    % can drop little spaces, b/c they don't matter when parsing;
+    tokens(tokens == -1) = [];
+       
+    % put a final wordstop at the end
+    tokens = [tokens(2:end);-3];
+    
+    % break everything down into words determined by word spacing time
+    toparse = find(tokens==-3); ltp = length(toparse);
+    words = cell(2,ltp); ix = 1;
+    for j=1:length(toparse)
+       a = toparse(j);
+       words{1,j} = tokens(ix:a-1);
+       ix = a + 1;
+    end
+
+    % break down each word into a set of symbols
+    for i=1:size(words,2)
+        % set end of word flag token
+        wd = [words{1,i};-2];
+        toparse = find(wd==-2); ltp = length(toparse);
+        toks = cell(1,ltp); ix = 1;
+        for j=1:ltp
+           a = toparse(j);
+           toks{j} = wd(ix:a-1);
+           ix = a + 1;
+        end
+        words{2,i} = toks';
+    end
+    
+    % get the alphabet map we will use for decoding
+    [code, decode] = getMap();
+    
+    % construct the words into a full message
+    totalChars = arrayfun(@(x) size(x{:},1),words(2,:));
+    totalChars = sum(totalChars)+size(words(1,:),2);
+    message = repmat('_',1,totalChars); ii = 0;
+    for i=1:size(words,2)
+        wd=words{2,i};
+        for j=1:length(wd)
+            sym = wd{j}';
+            for k=1:length(code)
+               if isequal(sym,code{k})
+                   message(ii+j) = char(decode{k});
+                   break;
+               end
+            end
+        end
+        ii = ii + length(wd);
+        message(ii+1) = ' ';
+        ii = ii + 1;        
+    end
+end
+
+
+function [code,decode] = getMap()
+    code{1} = [1 2];
     code{2} = [2 1 1 1];
     code{3} = [2 1 2 1];
     code{4} = [2 1 1];
@@ -143,6 +183,7 @@ function message = demorse(x)
     decode{8} = 'H';
     decode{9} = 'I';
     decode{10} = 'J';
+    %decode{10} = '.';
     decode{11} = 'K';
     decode{12} = 'L';
     decode{13} = 'M';
@@ -173,18 +214,4 @@ function message = demorse(x)
     decode{38} = '8';
     decode{39} = '9';
     decode{40} = '0';
-
-    % compare tokens to tables
-    out1 = repmat('_',1,length(tokens4));
-    for j = 1:length(tokens4)
-        temp_tok = [tokens4{j}; zeros(6 - length(tokens4{j}), 1)];
-        for k = 1:length(code)
-            if (temp_tok == [code{k}'; zeros(6 - length(code{k}), 1)]);
-                out1(j) = char(decode{k});
-            end
-        end
-    end
-
-    % construct the final message
-    message = char(out1);
 end

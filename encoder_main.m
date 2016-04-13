@@ -16,16 +16,16 @@ addpath('includes');
 
 %% Signal Frequency Segmentation
 % MLK's speech
-x1 = fftfilter(x, fs, 0, 3800);
+x1 = fftFilter(x, fs, 0, 3800);
 
 % Morse pulse
-x2 = fftfilter(x, fs, 3800, 4100);
+x2 = fftFilter(x, fs, 3800, 4100);
 
 % Mid freq noise
-x3 = fftfilter(x, fs, 4100, 5500);
+x3 = fftFilter(x, fs, 4100, 5500);
 
 % Chirp
-x4 = fftfilter(x, fs, 5500, 6500);
+x4 = fftFilter(x, fs, 5500, 6500);
 
 % High frequency noise
 x5 = x - x1 - x2 - x3 - x4;
@@ -88,7 +88,8 @@ h = plot(pxx);
 set(h,'Color',[1 .75 0 1]);
 % set the bottom subplot's title
 subt = get(gca,'Title');
-subt.String = 'Power Spectral Density of Filtered Sections';
+sqnrString = sprintf('SQNR: %0.1f dB',sqnr);
+subt.String = ['Power Spectral Density of Filtered Sections (' sqnrString ')'];
 set(gca,'Title',subt);
 % add a legend to the bottom subplot
 legend('Speech','Moorse Code','Mid Freq. Noise','Chirp','High Freq. Noise');

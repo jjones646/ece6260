@@ -1,5 +1,5 @@
-function [y] = fftfilter(x, Fs, flb, fub)
-% fftfilter: An FFT filter, same as Adobe Audition's FFT filter
+function [y] = fftFilter(x, Fs, flb, fub)
+% fftFilter: An FFT filter, same as Adobe Audition's FFT filter
 % Input:
 %   x: the orignal to be filtered
 %   Fs: the sampling frequency
