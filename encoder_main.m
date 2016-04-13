@@ -94,3 +94,10 @@ set(gca,'Title',subt);
 % add a legend to the bottom subplot
 legend('Speech','Moorse Code','Mid Freq. Noise','Chirp','High Freq. Noise');
 set(gca,'ylim',y_limits);
+
+figure
+Nx = length(x);
+nsc = floor(Nx/1024);
+nov = floor(nsc/2);
+nff = max(256,2^nextpow2(nsc));
+spectrogram(x,hamming(nsc),nov,nff,fs,'yaxis');
