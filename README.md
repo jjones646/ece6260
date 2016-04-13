@@ -23,7 +23,11 @@ TODO
 ## Examples
 
 Bandpass filters are used to divide [Signal.wav](./includes/Signal.wav) into manageable sections. A relevant compression technique is then applied for each section.
-![Filtered sections from the original signal](./doc/filtered-sections.png)
+<div align="center">
+<img src="https://raw.githubusercontent.com/jjones646/ece6260/master/doc/filtered-sections.png" alt="Filtered sections from the original signal" class="markdown-img-wrapper"/>
+</div>
 
 The original [Signal.wav](./includes/Signal.wav) file contains Morse code in the background audio. This section of the signal is decoded as a prerequisite to its compression.
-![Digitized Morse Signal](./doc/morse-signal.png)
+<div align="center" class="boxed-group">
+  <img src="https://raw.githubusercontent.com/jjones646/ece6260/master/doc/morse-signal.png" alt="Digitized Morse Signal" border="1"/>
+</div>
