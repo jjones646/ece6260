@@ -1,4 +1,4 @@
-function [ xq ] = uniform_quantizer( x, rate, xmin, xmax )
+function [ xq, indices ] = uniform_quantizer( x, rate, xmin, xmax )
 % uniform_quantizer: Implement a uniform quantizer and output the quantized
 % signal
 % Input:
