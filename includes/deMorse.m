@@ -1,18 +1,21 @@
-function [message,Y] = deMorse(x,varargin)
+function [message,i0,Y] = deMorse(x,varargin)
 % Decode a given morse code audio signal.
     
     visOn = 0;
     if nargin < 2
-        threshold = .025;
+        threshold = .019;
     else
         threshold = varargin{1};
     end
     
     x = abs(x); % half-wave rectify x
-    y = filter(ones(1,30)/30,1,x); % slow-wave filter
+    y = filter(ones(1,25)/25,1,x); % slow-wave filter
     
     % threshold the limits for digital representation
     X = y > threshold;
+
+    % the first transition of this signal is the starting point
+    i0 = find(X~=0,1);
     
     % the vector that we return back
     %Y = mat2gray(y);

@@ -24,7 +24,7 @@ fs = round(fs/ratio);
 xx = xx(1:ratio:end);
 
 %% Decode morse code message
-[msg,yy] = deMorse(xx);
+[msg,i0,yy] = deMorse(xx);
 
 % print out the message
 fprintf('Decoded Message: %s\n',msg);
@@ -36,11 +36,11 @@ title('{\bfHistogram of Morse Code Transitions Timings}');
 ylabel('Number of Transitions');
 xlabel('Samples Until Next Transition');
 
-% bb = diff(aa);
-% bbi = find(abs(2330-bb) < 500);
-% bb = bb(bbi)
-% histogram(bb,30); grid on;
-% return
+bb = diff(aa);
+bbi = find(abs(3100-bb) < 300);
+bb = bb(bbi)
+histogram(bb,100); grid on;
+return
 
 %% Reconstruct the morse code beeps centered at 4kHz
 figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
