@@ -32,7 +32,7 @@ morse = fftFilter(morse, fs, 3800, 4100);
 
 %% Create the background noise
 load('noise_model.mat');
-noise = 2.2*normrnd(mu,sigma,1,length(x));
+noise = 2.2*normrnd(pd(1),pd(2),1,length(x));
 noise = highpassNoiseFilter(noise);
 
 %% Get the compressed speech
@@ -52,4 +52,5 @@ morse(end+1:end+diffInd) = 0;
 reconstructed = chirp + noise + morse + speech;
 
 %% Write out the decoded signal
-audiowrite('decoded_signal.wav', reconstructed, fs);
+outfile = sprintf('decoded_signal%u.wav', enmethod);
+audiowrite(outfile, reconstructed, fs);
