@@ -58,4 +58,11 @@ else
     x14 = resample(x13, fs, dsfreq);
 end
 
-speech_generated = x14;
+if length(x14) < xlen
+    x14 = [x14; zeros(xlen-length(x14),1)];
+end
+if length(x14) > xlen
+    x14 = x14(1:xlen);
+end
+
+speech = x14';
