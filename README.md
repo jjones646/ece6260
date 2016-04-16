@@ -39,7 +39,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.
 
 |Speech|
 |:---|
-|6 methods were tested for the speech compression. The best performance comes from feedback adaptive quantizer - compressing to less than `200*kB*` with an SQNR of `10dB`.|
+|6 methods were tested for the speech compression. The best performance comes from feedback adaptive quantizer - compressing to less than `200kB` with an SQNR of `10dB`.|
 |**TODO:**|
 
 |Morse Code|
