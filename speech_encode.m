@@ -6,7 +6,7 @@
 
 %% Specify the downsampling and encoding method
 dsmethod = 1; % downsampling method: 1-decimate; 2-resample
-enmethod = 5; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd, 5-uniform quantizer, 6-feedback adaptive quantizer
+enmethod = 6; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd, 5-uniform quantizer, 6-feedback adaptive quantizer
 
 xlen = numel(x1);
 
