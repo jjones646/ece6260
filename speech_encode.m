@@ -6,7 +6,7 @@
 
 %% Specify the downsampling and encoding method
 dsmethod = 1; % downsampling method: 1-decimate; 2-resample
-enmethod = 6; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd, 5-uniform quantizer, 6-feedback adaptive quantizer
+enmethod = ENCODING_METHOD; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd, 5-uniform quantizer, 6-feedback adaptive quantizer
 
 xlen = numel(x1);
 
@@ -30,56 +30,46 @@ switch enmethod
         DCTcoeffs = single(DCTcoeffs); INDcoeffs = uint16(INDcoeffs);
         cR = single(cR); win = single(win); dsfreq = single(dsfreq);
         
-        save('signal_encoded.mat', 'DCTcoeffs', 'INDcoeffs', 'cR', 'win', 'dsfreq', '-append');
+        save(sigFn, 'DCTcoeffs', 'INDcoeffs', 'cR', 'win', 'dsfreq', '-append');
     case 2
         %% Method 2: mu-law algorithm
         x12 = uint8(lin2pcmu(x11));
         
-        save('signal_encoded.mat', 'x12', '-append');
+        save(sigFn, 'x12', '-append');
     case 3
         %% Method 3: a-law algorithm
         x12 = uint8(lin2pcma(x11));
         
-        save('signal_encoded.mat', 'x12', '-append');
+        save(sigFn, 'x12', '-append');
     case 4
         %% Method 4: Lloyd Algorithm
         bitrate = 3;
         [indices, C] = kmeans(x11, 2^bitrate, 'MaxIter', 1000);
         C = single(C);
         indices = indices - 1; % k-mean cluster label: from 1 to 2^bitrate
-        indices_bitstream = ints2bitstream(indices, bitrate);
-        [indices_bytes, indices_res] = bitstream2bytes(indices_bitstream);
-        indices_res = uint8(indices_res);
         
-        save('signal_encoded.mat', 'C', 'indices_bytes', 'indices_res', 'bitrate', '-append');
+        save(sigFn, 'C', 'indices', 'bitrate', '-append');
     case 5
         %% Method 5: Uniform Quantizer
         bitrate = 4;
         bitrate = min(bitrate, 7); % the maximum bitrate is set to be 7
-        
         [x12, indices] = uniform_quantizer(x11, bitrate, min(x11), max(x11)); % minimum bit rate should be 4
+        x11m = [min(x11) max(x11)];
+        indices = uint8(indices);
         
-        indices_bitstream = ints2bitstream(indices, bitrate);
-        [indices_bytes, indices_res] = bitstream2bytes(indices_bitstream);
-        x11min = min(x11); x11max = max(x11);
-        indices_res = uint8(indices_res);
-               
-        save('signal_encoded.mat', 'x11min', 'x11max', 'indices_bytes', 'indices_res', 'bitrate', '-append');
+        save(sigFn, 'x11m', 'indices', 'bitrate', '-append');
     case 6
         %% Method 6: Feedback Adaptive Quantizer
         bitrate = 4;
         alpha = 0.99;
         [yq, indices] = feedback_quantizer(x11, bitrate, alpha);
+        x11m = [min(x11) max(x11)];
         
-        indices_bitstream = ints2bitstream(indices, bitrate);
-        [indices_bytes, indices_res] = bitstream2bytes(indices_bitstream);
-        x11min = min(x11); x11max = max(x11);
-        save('signal_encoded.mat', 'x11min', 'x11max', 'indices_bytes', 'indices_res', 'bitrate', 'alpha', '-append');
-        
+        save(sigFn, 'x11m', 'indices', 'bitrate', 'alpha', '-append');
     otherwise
         disp('Please specify the encoding method: enmethod = {1,2..5}');
 end
 
 %% Save additional info to the mat file
 dsmethod = uint8(dsmethod); enmethod = uint8(enmethod);
-save('signal_encoded.mat', 'enmethod', 'dsmethod', 'xlen', '-append');
+save(sigFn, 'enmethod', 'dsmethod', 'xlen', '-append');

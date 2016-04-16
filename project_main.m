@@ -14,28 +14,44 @@ addpath('includes');
 %% Read in the signal
 [x,fs] = audioread('Signal.wav');
 
+ENCODING_METHOD = 5;
+sigFn = sprintf('signal_encoded%u.mat', ENCODING_METHOD);
+
 %% Create the chirp signal
-% the parameters that are stored for reconstruction
-chp.a = .4; chp.v = [.5 6000 100];
+% Encoding
+chp.a = .4;
+chp.v = [.5 6000 100];
+save(sigFn, 'chp');
+
+% Decode
+% load(sigFn, 'chp');
 % compute the chirp signal
 chirp = chp.a*makeChirp(chp.v(1),chp.v(2),chp.v(3),fs);
 chirp = fftFilter(chirp, fs, 5500, 6500);
-save('signal_encoded.mat', 'chp');
 
 %% Create the morse code signal
+% Encoding
 sMorse = fftFilter(x,fs,3800,4100);
-[msg,i0] = deMorse(sMorse); % ascii string message & starting sample
+[msg, msg_i0] = deMorse(sMorse); % ascii string message & starting sample
+save(sigFn, 'msg', 'msg_i0', '-append');
+
+% Decoding
+% load(sigFn, 'msg');
 morse = .8*makeMorse(msg);
 % zero pad from the start of the signal, and also at the end
-morse = [zeros(1,i0) morse];
+morse = [zeros(1,msg_i0) morse];
 morse(end:length(sMorse)) = 0;
 winSz = 7; b = (1/winSz)*ones(1,winSz);
 morse = filter(b,1,morse);
 morse = fftFilter(morse, fs, 3800, 4100);
 
 %% Create the background noise
-load('noise_model.mat');
-save('signal_encoded.mat', 'pd');
+% Encoding
+pd = [.0163 .0325];
+save(sigFn, 'pd', '-append');
+
+% Decoding
+% load(sigFn, 'pd');
 noise = 2.2*normrnd(pd(1),pd(2),1,length(x));
 noise = highpassNoiseFilter(noise);
 
