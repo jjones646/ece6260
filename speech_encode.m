@@ -66,6 +66,17 @@ switch enmethod
         x11m = [min(x11) max(x11)];
         
         save(sigFn, 'x11m', 'indices', 'bitrate', 'alpha', '-append');
+    case 7
+        %% Method 7: LPC
+        p = 10; % prediction order
+        [ es, as ] = lpc_analysis( x11, fs, p );
+        % Quantization for error signal
+        rate = 3;
+        es = uniform_quantizer(es, rate, min(es(:)), max(es(:)));
+        as = single(as); p = uint8(p);
+        x11len = length(x11);
+        
+        save(sigFn, 'es', 'as', 'p', 'x11len', '-append');
     otherwise
         disp('Please specify the encoding method: enmethod = {1,2..5}');
 end
