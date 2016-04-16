@@ -18,13 +18,12 @@ function morse = makeMorse(varargin)
 
     fs = 16000;
     freq = 4000;
-    ampl = 0.8;
 
     % 796 <-- # samples for a short beep
     % 740 <-- # samples for silence after short beep
 
     tt = 0:1/fs:(796/fs);
-    Dit = ampl*cos(2*pi*freq.*tt); Dit = Dit';
+    Dit = cos(2*pi*freq.*tt); Dit = Dit';
     
     % 2332 <-- # samples for a long beep
     % 2276 <-- # samples for silence after long beep
@@ -32,10 +31,10 @@ function morse = makeMorse(varargin)
     % 3107 is significant somehow
     
     ttt = 0:1/fs:(2332/fs);
-    Dah = ampl*cos(2*pi*freq.*ttt); Dah = Dah';
+    Dah = cos(2*pi*freq.*ttt); Dah = Dah';
     
     ttJ = 0:1/fs:(3107/fs);
-    DahJ = ampl*cos(2*pi*freq.*ttJ); DahJ = DahJ';
+    DahJ = cos(2*pi*freq.*ttJ); DahJ = DahJ';
 
     ssp = zeros(1,740); ssp = ssp';
     lsp = zeros(1,2276); lsp = lsp';

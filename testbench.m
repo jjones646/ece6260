@@ -18,18 +18,18 @@ addpath('includes');
 % the parameters that are stored for reconstruction
 chp.a = .4; chp.v = [.5 6000 100];
 % compute the chirp signal
-chirp = chp.a*makeChirp(chp.v(0),chp.v(1),chp.v(2),fs);
+chirp = chp.a*makeChirp(chp.v(1),chp.v(2),chp.v(3),fs);
 chirp = fftFilter(chirp, fs, 5500, 6500);
 save('signal_encoded.mat', 'chp');
 
 %% Create the morse code signal
 sMorse = fftFilter(x,fs,3800,4100);
 [msg,i0] = deMorse(sMorse); % ascii string message & starting sample
-morse = makeMorse(msg);
+morse = .8*makeMorse(msg);
 % zero pad from the start of the signal, and also at the end
 morse = [zeros(1,i0) morse];
 morse(end:length(sMorse)) = 0;
-w = 7; b = (1/winSz)*ones(1,winSz);
+winSz = 7; b = (1/winSz)*ones(1,winSz);
 morse = filter(b,1,morse);
 morse = fftFilter(morse, fs, 3800, 4100);
 
