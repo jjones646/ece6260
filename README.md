@@ -55,7 +55,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.
 |![](./doc/chirp-equation.png)|
 
 ```
-S(t) = A \cos\left( 2 \pi \left[ \omega_{mid} \cdot t + B \cos \left( 2 \pi \omega_{env} \cdot t \right) \right] \right)
+S(t) = A \cos\left( 2 \pi \left[ f_{mid} \cdot t + B \cos \left( 2 \pi f_{env} \cdot t \right) \right] \right)
 ```
 
 |Noise|
