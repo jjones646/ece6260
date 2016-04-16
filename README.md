@@ -52,7 +52,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.
 |Chirp|
 |:---|
 |The sinusodial chirp in the signal is reconstructed from the equation below during decompression.|
-|**TODO:** equation here|
+|![](./doc/chirp-equation.png)|
 
 |Noise|
 |:---|
