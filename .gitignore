@@ -1,4 +1,5 @@
 *.*~
 *.mat
 *.sublime-workspace
-decoded_signal*.wav
+*.wav
+signal_encoded.mat

@@ -32,6 +32,7 @@ morse = fftFilter(morse, fs, 3800, 4100);
 
 %% Create the background noise
 load('noise_model.mat');
+save('signal_encoded.mat', 'pd');
 noise = 2.2*normrnd(pd(1),pd(2),1,length(x));
 noise = highpassNoiseFilter(noise);
 

@@ -3,7 +3,7 @@
 %  April 17, 2016
 
 %% Read the compressed file
-load('speech_parameters.mat');
+load('signal_encoded.mat');
 
 %% Decoder for MLK's speech
 switch enmethod
@@ -65,4 +65,4 @@ if length(x14) > xlen
     x14 = x14(1:xlen);
 end
 
-speech = x14';
+speech = x14;
