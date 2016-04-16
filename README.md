@@ -54,6 +54,10 @@ This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.
 |The sinusodial chirp in the signal is reconstructed from the equation below during decompression.|
 |![](./doc/chirp-equation.png)|
 
+```
+S(t) = A \cos\left( 2 \pi \left[ \omega_{mid} \cdot t + B \cos \left( 2 \pi \omega_{env} \cdot t \right) \right] \right)
+```
+
 |Noise|
 |:---|
 |**TODO**|
