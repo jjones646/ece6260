@@ -21,8 +21,7 @@ To encode the [Signal.wav](https://raw.githubusercontent.com/jjones646/ece6260/m
 
 
 ## License
-**TODO**
-~~This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.md) file for details.~~
+This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.md) file for details.
 
 
 ## Algorithm Approach
