@@ -1,7 +1,6 @@
-clear all;
 %% Read the compressed file
 load speech.mat;
-fs = 16000;
+
 %% Dncoder for MLK's speech (x1)
 switch enmethod
     case 1
@@ -54,24 +53,3 @@ else
     dsfreq = double(dsfreq);
     x14 = resample(x13, fs, dsfreq);
 end
-
-%% Decoder for
-
-
-%% Decoder for x5
-x55 = 4 * stdx5 * randn(xlen, 1);
-x55 = fftfilter(x55, fs, 6500, 8000);
-
-%% Calculate SQNR
-[x1, fs] = audioread('speech.wav');
-xlen = length(x1);
-if length(x14) < xlen
-    x14 = [x14; zeros(xlen-length(x14),1)];
-end
-if length(x14) > xlen
-    x14 = x14(1:xlen);
-end
-
-err = x1 - x14;
-sqnr = 10 * log10(norm(x1)^2/norm(err)^2);
-
