@@ -1,7 +1,7 @@
 %% Read the compressed file
-load speech.mat;
+load('speech_parameters.mat');
 
-%% Dncoder for MLK's speech (x1)
+%% Decoder for MLK's speech
 switch enmethod
     case 1
         % Method 1: Discrete Cosine Transform Compression
@@ -53,3 +53,5 @@ else
     dsfreq = double(dsfreq);
     x14 = resample(x13, fs, dsfreq);
 end
+
+speech_generated = x14;
