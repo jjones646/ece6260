@@ -18,22 +18,29 @@ function morse = makeMorse(varargin)
 
     fs = 16000;
     freq = 4000;
+    ampl = 0.8;
 
-    tt = 0:1/fs:(740/fs);
-    Dit = cos(2*pi*freq.*tt);
-    Dit = Dit';
+    % 796 <-- # samples for a short beep
+    % 740 <-- # samples for silence after short beep
+
+    tt = 0:1/fs:(796/fs);
+    Dit = ampl*cos(2*pi*freq.*tt); Dit = Dit';
     
-    % 2276
-    % 2332
+    % 2332 <-- # samples for a long beep
+    % 2276 <-- # samples for silence after long beep
 
+    % 3107 is significant somehow
+    
     ttt = 0:1/fs:(2332/fs);
-    Dah = cos(2*pi*freq.*ttt);
-    Dah = Dah';
+    Dah = ampl*cos(2*pi*freq.*ttt); Dah = Dah';
+    
+    ttJ = 0:1/fs:(3107/fs);
+    DahJ = ampl*cos(2*pi*freq.*ttJ); DahJ = DahJ';
 
-    ssp = zeros(1,length(Dit)+50);
-    lsp = zeros(1,length(Dah)+50);
-    ssp = ssp';
-    lsp = lsp';
+    ssp = zeros(1,740); ssp = ssp';
+    lsp = zeros(1,2276); lsp = lsp';
+
+    % 7652 <-- # samples after a word
 
     % Defining Characters & Numbers
     A = [Dit;ssp;Dah];
@@ -45,7 +52,7 @@ function morse = makeMorse(varargin)
     G = [Dah;ssp;Dah;ssp;Dit];
     H = [Dit;ssp;Dit;ssp;Dit;ssp;Dit];
     I = [Dit;ssp;Dit];
-    J = [Dit;ssp;Dah;ssp;Dah;ssp;Dah];
+    J = [Dit;ssp;DahJ;ssp;DahJ;ssp;Dah];
     K = [Dah;ssp;Dit;ssp;Dah];
     L = [Dit;ssp;Dah;ssp;Dit;ssp;Dit];
     M = [Dah;ssp;Dah];
@@ -82,14 +89,14 @@ function morse = makeMorse(varargin)
     morsecode=[];
     for i=1:length(text)
         if isvarname(text(i))
-        morsecode = [morsecode;eval(text(i))];
+            morsecode = [morsecode;eval(text(i))];
         elseif ismember(text(i),'.,?/')
             x = findstr(text(i),'.,?/');
             morsecode = [morsecode;eval(vars{x})];
         elseif ~isempty(str2num(text(i)))
             morsecode = [morsecode;eval(['n' text(i)])];
         elseif text(i)==' '
-            morsecode = [morsecode;ssp;ssp;ssp];
+            morsecode = [morsecode;zeros(1,3090)'];
         end
         morsecode = [morsecode;lsp];
     end
