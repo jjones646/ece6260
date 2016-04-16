@@ -9,11 +9,11 @@ persistent Hd;
 
 if isempty(Hd)
     
-    Fstop = 3800000;   % Stopband Frequency
-    Fpass = 4600000;   % Passband Frequency
-    Astop = 60;        % Stopband Attenuation (dB)
-    Apass = 3;         % Passband Ripple (dB)
-    Fs    = 16000000;  % Sampling Frequency
+    Fstop = 3.8;   % Stopband Frequency
+    Fpass = 4.6;   % Passband Frequency
+    Astop = 60;    % Stopband Attenuation (dB)
+    Apass = 3;     % Passband Ripple (dB)
+    Fs    = 16;  % Sampling Frequency
     
     h = fdesign.highpass('fst,fp,ast,ap', Fstop, Fpass, Astop, Apass, Fs);
     

@@ -30,17 +30,17 @@ switch enmethod
         DCTcoeffs = single(DCTcoeffs); INDcoeffs = uint16(INDcoeffs);
         cR = single(cR); win = single(win); dsfreq = single(dsfreq);
         
-        save('signal_encoded.mat', 'DCTcoeffs', 'INDcoeffs', 'cR', 'win', 'dsfreq');
+        save('signal_encoded.mat', 'DCTcoeffs', 'INDcoeffs', 'cR', 'win', 'dsfreq', '-append');
     case 2
         %% Method 2: mu-law algorithm
         x12 = uint8(lin2pcmu(x11));
         
-        save('signal_encoded.mat', 'x12');
+        save('signal_encoded.mat', 'x12', '-append');
     case 3
         %% Method 3: a-law algorithm
         x12 = uint8(lin2pcma(x11));
         
-        save('signal_encoded.mat', 'x12');
+        save('signal_encoded.mat', 'x12', '-append');
     case 4
         %% Method 4: Lloyd Algorithm
         bitrate = 3;
@@ -51,7 +51,7 @@ switch enmethod
         [indices_bytes, indices_res] = bitstream2bytes(indices_bitstream);
         indices_res = uint8(indices_res);
         
-        save('signal_encoded.mat', 'C', 'indices_bytes', 'indices_res', 'bitrate');
+        save('signal_encoded.mat', 'C', 'indices_bytes', 'indices_res', 'bitrate', '-append');
     case 5
         %% Method 5: Uniform Quantizer
         bitrate = 4;
@@ -64,7 +64,7 @@ switch enmethod
         x11min = min(x11); x11max = max(x11);
         indices_res = uint8(indices_res);
                
-        save('signal_encoded.mat', 'x11min', 'x11max', 'indices_bytes', 'indices_res', 'bitrate');
+        save('signal_encoded.mat', 'x11min', 'x11max', 'indices_bytes', 'indices_res', 'bitrate', '-append');
     case 6
         %% Method 6: Feedback Adaptive Quantizer
         bitrate = 4;
@@ -74,7 +74,7 @@ switch enmethod
         indices_bitstream = ints2bitstream(indices, bitrate);
         [indices_bytes, indices_res] = bitstream2bytes(indices_bitstream);
         x11min = min(x11); x11max = max(x11);
-        save('signal_encoded.mat', 'x11min', 'x11max', 'indices_bytes', 'indices_res', 'bitrate', 'alpha');
+        save('signal_encoded.mat', 'x11min', 'x11max', 'indices_bytes', 'indices_res', 'bitrate', 'alpha', '-append');
         
     otherwise
         disp('Please specify the encoding method: enmethod = {1,2..5}');
