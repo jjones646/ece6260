@@ -1,3 +1,7 @@
+%% ECE 6260 - Decode the speech portion of the signal from the encoded parameters
+%  Yifei Fan & Jonathan Jones
+%  April 17, 2016
+
 %% Read the compressed file
 load('speech_parameters.mat');
 

@@ -1,4 +1,4 @@
-%% ECE 6260 - Final Project
+%% ECE 6260 - Encode parameters from the speech portion of the signal
 %  Yifei Fan & Jonathan Jones
 %  April 17, 2016
 %
@@ -7,6 +7,8 @@
 %% Specify the downsampling and encoding method
 dsmethod = 1; % downsampling method: 1-decimate; 2-resample
 enmethod = 6; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd, 5-uniform quantizer, 6-feedback adaptive quantizer
+
+xlen = numel(x1);
 
 % Down sampling
 if dsmethod == 1

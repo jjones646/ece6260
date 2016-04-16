@@ -36,8 +36,10 @@ noise = 2.2*normrnd(mu,sigma,1,length(x));
 noise = highpassNoiseFilter(noise);
 
 %% Get the compressed speech
-% speech = fftFilter(x,fs,0,3800)';
-decode_speech
+x1 = fftFilter(x,fs,20,3800)';
+run('speech_encode.m');
+run('speech_decode.m');
+% can use 'speech_generated' after speech_decode.m is called
 
 %% Fixup array lengths
 chirpPeriods = ceil(length(x)/length(chirp));
@@ -47,7 +49,7 @@ diffInd = abs(length(x)-length(morse));
 morse(end+1:end+diffInd) = 0;
 
 %% Construct the top half of the signal
-reconstructed = chirp + noise + morse + speech_generated;
+reconstructed = chirp + noise + morse + speech_generated';
 
 %% Write out the decoded signal
 audiowrite('decoded_signal.wav', reconstructed, fs);
