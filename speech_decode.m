@@ -2,9 +2,6 @@
 %  Yifei Fan & Jonathan Jones
 %  April 17, 2016
 
-%% Read the compressed file
-load(sigFn);
-
 %% Decoder for MLK's speech
 switch enmethod
     case 1
@@ -43,9 +40,8 @@ switch enmethod
 end
 
 if dsmethod == 1
-    x14 = interp(x13, dsrate);
+    x14 = interp(x13, 3);
 else
-    dsfreq = double(dsfreq);
     x14 = resample(x13, fs, dsfreq);
 end
 

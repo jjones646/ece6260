@@ -11,7 +11,7 @@ cd(fileparts(mfilename('fullpath')));
 % add the 'includes' directory to the path for using the filters
 addpath('includes');
 
-%% Manually set encoding method here
+%% Set encoding method to use for speech
 % Encoding Methods:
 %   1 = DCT
 %   2 = mu-law
@@ -19,73 +19,32 @@ addpath('includes');
 %   4 = Lloyd
 %   5 = uniform quantizer
 %   6 = feedback adaptive quantizer
-ENCODING_METHOD = 5;
-
-% override the encoding method if we're using the 'runall.m' script
-if exist('tmp_encoding_method.mat','file') == 2
-    load('tmp_encoding_method.mat','ENCODING_METHOD');
-end
+method = 5;
 
 %% Construct the encoded/decoded filenames that will be exported
-sigFn = sprintf('Signal_encoded%u.mat',ENCODING_METHOD);
-outfile = sprintf('Signal_decoded%u.wav',ENCODING_METHOD);
+fnEncoded = sprintf('Signal_encoded%u.mat', method);
+fnDecoded = sprintf('Signal_decoded%u.wav', method);
 
-%% Read in the signal
-[x,fs] = audioread('Signal.wav');
+%% Encode the signal
+% writes the reconstructed signal to the given filename
+signalEncode('Signal.wav', fnEncoded, method);
 
-%% Create the chirp signal
-% Encoding steps
-chp.a = .4;
-chp.v = [.5 6000 100];
-save(sigFn, 'chp');
+%% Flush ALL memory, storing the method to disk temporarily
+save('tmp_speech_method.mat', 'method');
 
-% Decoding steps
-% load(sigFn, 'chp');
-% compute the chirp signal
-chirp = chp.a*makeChirp(chp.v(1),chp.v(2),chp.v(3),fs);
-chirp = fftFilter(chirp, fs, 5500, 6500);
+clear all; % clear all matlab variables
 
-%% Create the morse code signal
-% Encoding steps
-sMorse = fftFilter(x,fs,3800,4100);
-[msg, msg_i0] = deMorse(sMorse); % ascii string message & starting sample
-save(sigFn, 'msg', 'msg_i0', '-append');
+% load our method back so we can add it to the filenames
+load('tmp_speech_method.mat', 'method');
+delete('tmp_speech_method.mat'); % cleanup
 
-% Decoding steps
-% load(sigFn, 'msg');
-morse = .8*makeMorse(msg);
-% zero pad from the start of the signal, and also at the end
-morse = [zeros(1,msg_i0) morse];
-morse(end:length(sMorse)) = 0;
-winSz = 7; b = (1/winSz)*ones(1,winSz);
-morse = filter(b,1,morse);
-morse = fftFilter(morse, fs, 3800, 4100);
+% reset our filenames
+fnEncoded = sprintf('Signal_encoded%u.mat', method);
+fnDecoded = sprintf('Signal_decoded%u.wav', method);
 
-%% Create the background noise
-% Encoding steps
-pd = [.0163 .0325];
-save(sigFn, 'pd', '-append');
+% now clear the method again before entering into decoding
+clear method
 
-% Decoding steps
-% load(sigFn, 'pd');
-noise = 2.2*normrnd(pd(1),pd(2),1,length(x));
-noise = highpassNoiseFilter(noise);
-
-%% Get the compressed speech
-x1 = fftFilter(x,fs,20,3800)';
-run('speech_encode.m');
-run('speech_decode.m');
-% can use 'speech' after speech_decode.m is called
-
-%% Fixup array lengths
-chirpPeriods = ceil(length(x)/length(chirp));
-chirp = repmat(chirp,1,chirpPeriods);
-chirp = chirp(1:length(x));
-diffInd = abs(length(x)-length(morse));
-morse(end+1:end+diffInd) = 0;
-
-%% Construct the signal from all pieces
-reconstructed = chirp + noise + morse + speech;
-
-%% Write out the decoded signal
-audiowrite(outfile, reconstructed, fs);
+%% Decode the signal
+% writes the reconstructed signal to the given filename
+signalDecode(fnEncoded, fnDecoded);

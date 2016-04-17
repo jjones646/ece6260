@@ -12,8 +12,7 @@ xlen = numel(x1);
 
 % Down sampling
 if dsmethod == 1
-    dsrate = 3; % down sampling factor
-    x11 = decimate(x1, dsrate); % down sampled signal
+    x11 = decimate(x1, 3); % down sampled signal
 else
     dsfreq = 4000; % down sampling frequency
     x11 = resample(x1, dsfreq, fs);
@@ -30,17 +29,17 @@ switch enmethod
         DCTcoeffs = single(DCTcoeffs); INDcoeffs = uint16(INDcoeffs);
         cR = single(cR); win = single(win); dsfreq = single(dsfreq);
         
-        save(sigFn, 'DCTcoeffs', 'INDcoeffs', 'cR', 'win', 'dsfreq', '-append');
+        save(outFile, 'DCTcoeffs', 'INDcoeffs', 'cR', 'win', 'dsfreq', '-append');
     case 2
         %% Method 2: mu-law algorithm
         x12 = uint8(lin2pcmu(x11));
         
-        save(sigFn, 'x12', '-append');
+        save(outFile, 'x12', '-append');
     case 3
         %% Method 3: a-law algorithm
         x12 = uint8(lin2pcma(x11));
         
-        save(sigFn, 'x12', '-append');
+        save(outFile, 'x12', '-append');
     case 4
         %% Method 4: Lloyd Algorithm
         bitrate = 3;
@@ -48,7 +47,7 @@ switch enmethod
         C = single(C);
         indices = indices - 1; % k-mean cluster label: from 1 to 2^bitrate
         
-        save(sigFn, 'C', 'indices', 'bitrate', '-append');
+        save(outFile, 'C', 'indices', 'bitrate', '-append');
     case 5
         %% Method 5: Uniform Quantizer
         bitrate = 4;
@@ -56,7 +55,7 @@ switch enmethod
         [x12, indices] = uniform_quantizer(x11, bitrate, min(x11), max(x11)); % minimum bit rate should be 4
         x11m = [min(x11) max(x11)];
         
-        save(sigFn, 'x11m', 'indices', 'bitrate', '-append');
+        save(outFile, 'x11m', 'indices', 'bitrate', '-append');
     case 6
         %% Method 6: Feedback Adaptive Quantizer
         bitrate = 4;
@@ -64,7 +63,7 @@ switch enmethod
         [yq, indices] = feedback_quantizer(x11, bitrate, alpha);
         x11m = [min(x11) max(x11)];
         
-        save(sigFn, 'x11m', 'indices', 'bitrate', 'alpha', '-append');
+        save(outFile, 'x11m', 'indices', 'bitrate', 'alpha', '-append');
     case 7
         %% Method 7: LPC
         p = 10; % prediction order
@@ -75,11 +74,11 @@ switch enmethod
         as = single(as); p = uint8(p);
         x11len = length(x11);
         
-        save(sigFn, 'es', 'as', 'p', 'x11len', '-append');
+        save(outFile, 'es', 'as', 'p', 'x11len', '-append');
     otherwise
         error('Please specify the encoding method: enmethod = {1,2..7}');
 end
 
 %% Save additional info to the mat file
 dsmethod = uint8(dsmethod); enmethod = uint8(enmethod);
-save(sigFn, 'enmethod', 'dsmethod', 'xlen', '-append');
+save(outFile, 'enmethod', 'dsmethod', 'xlen', '-append');
