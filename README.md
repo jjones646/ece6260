@@ -27,8 +27,8 @@ This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.
 |Signal Segmentation|
 |:---|
 |Bandpass filters are used to divide [Signal.wav](https://raw.githubusercontent.com/jjones646/ece6260/master/includes/Signal.wav) into manageable sections. The `fftFilter` function in [fftFilter.m](./includes/fftFilter.m) is used for the initial segmentation. A relevant compression technique is then applied for each section, which are shown below.|
-|![](./doc/filtered-sections.png)|
 |The signal is broken down into these 3 parts:<ul><li>Speech</li><li>Morse Code</li><li>Chirp</li></ul>|
+|![](./doc/filtered-sections.png)|
 
 
 ### Section Implementations
