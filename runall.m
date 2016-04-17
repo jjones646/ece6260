@@ -13,6 +13,9 @@ addpath('includes');
 
 %% Iterate over all methods
 for ENCODING_METHOD=1:7
-    save('encoding_method.mat','ENCODING_METHOD');
+    save('tmp_encoding_method.mat','ENCODING_METHOD');
     run('project_main.m');
 end
+
+% cleanup temporary file
+delete('tmp_encoding_method.mat');

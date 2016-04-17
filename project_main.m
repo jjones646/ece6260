@@ -11,14 +11,18 @@ cd(fileparts(mfilename('fullpath')));
 % add the 'includes' directory to the path for using the filters
 addpath('includes');
 
-%% Read in the signal
-[x,fs] = audioread('Signal.wav');
-
-ENCODING_METHOD = 6;
-if exist('encoding_method.mat', 'file') == 2
-    load('encoding_method.mat', 'ENCODING_METHOD');
+%% Manually set encoding method here
+%
+ENCODING_METHOD = 5;
+%
+% override the encoding method if we're using the 'runall.m' script
+if exist('tmp_encoding_method.mat','file') == 2
+    load('tmp_encoding_method.mat','ENCODING_METHOD');
 end
 sigFn = sprintf('signal_encoded%u.mat', ENCODING_METHOD);
+
+%% Read in the signal
+[x,fs] = audioread('Signal.wav');
 
 %% Create the chirp signal
 % Encoding
