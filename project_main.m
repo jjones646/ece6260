@@ -65,7 +65,8 @@ fprintf('  saved to ''%s''\n', fnDecoded);
 fprintf('    - %u bytes\n\n', decodedBytes);
 
 % reconstructed signal
-[x,fs] = audioread(sprintf('Signal_decoded%u.wav',method));
-sqnr = 10*log10(norm(x)^2/norm(ox-x)^2);
-fprintf('Method %u (SQNR: %.2f dB)',method,sqnr);
+xOrig = audioread('Signal.wav');
+x = audioread(sprintf('Signal_decoded%u.wav',method));
+sqnr = 10*log10(norm(x)^2/norm(xOrig-x)^2);
+fprintf('Method %u (SQNR: %.2f dB)\n',method,sqnr);
 
