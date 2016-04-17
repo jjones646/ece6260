@@ -12,14 +12,20 @@ cd(fileparts(mfilename('fullpath')));
 addpath('includes');
 
 %% Manually set encoding method here
-%
+% Encoding Methods:
+%   1 = DCT
+%   2 = mu-law
+%   3 = a-law
+%   4 = Lloyd
+%   5 = uniform quantizer
+%   6 = feedback adaptive quantizer
 ENCODING_METHOD = 5;
 %
 % override the encoding method if we're using the 'runall.m' script
 if exist('tmp_encoding_method.mat','file') == 2
     load('tmp_encoding_method.mat','ENCODING_METHOD');
 end
-sigFn = sprintf('signal_encoded%u.mat', ENCODING_METHOD);
+sigFn = sprintf('Signal_encoded%u.mat', ENCODING_METHOD);
 
 %% Read in the signal
 [x,fs] = audioread('Signal.wav');
@@ -79,5 +85,5 @@ morse(end+1:end+diffInd) = 0;
 reconstructed = chirp + noise + morse + speech;
 
 %% Write out the decoded signal
-outfile = sprintf('decoded_signal%u.wav', enmethod);
+outfile = sprintf('Signal_decoded%u.wav', ENCODING_METHOD);
 audiowrite(outfile, reconstructed, fs);
