@@ -26,9 +26,7 @@ switch enmethod
         cR = 0.4; % required compression ratio
         win = 0.25; % window size in second
         dsfreq = fs/dsrate; % frequency of the input
-        DCTcoeffs = [];
-        INDcoeffs = [];
-        [DCTcoeffs, INDcoeffs] = dctCompress(x11, win, dsfreq, cR);
+        [DCTcoeffs, INDcoeffs] = dctCompress(x11', win, dsfreq, cR);
         DCTcoeffs = single(DCTcoeffs); INDcoeffs = uint16(INDcoeffs);
         cR = single(cR); win = single(win); dsfreq = single(dsfreq);
         
