@@ -64,16 +64,8 @@ decodedBytes = subsref(dir(fnDecoded), substruct('.','bytes'));
 fprintf('  saved to ''%s''\n', fnDecoded);
 fprintf('    - %u bytes\n\n', decodedBytes);
 
-[ox,ofs] = audioread('Signal.wav');
-poxx = psd(spectrum.periodogram,ox,'Fs',ofs,'NFFT',length(ox));
-figure('units','normalized','outerposition',[0 0 1 1])
-% original signal
-h = plot(poxx); hold on;
-set(h,'color',[0 0 1 .25]);
 % reconstructed signal
 [x,fs] = audioread(sprintf('Signal_decoded%u.wav',method));
 sqnr = 10*log10(norm(x)^2/norm(ox-x)^2);
-pxx = psd(spectrum.periodogram,x,'Fs',fs,'NFFT',length(x));
-h = plot(pxx);
-set(h,'color',[.8 0 0 .15]);
-title(sprintf('Method %u (SQNR: %.2f dB)',method,sqnr));
+fprintf('Method %u (SQNR: %.2f dB)',method,sqnr);
+
