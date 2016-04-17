@@ -1,4 +1,4 @@
-%% ECE 6260 - Morse Decoding & Reconstruction Testbench
+%% ECE 6260 - Morse Decoding & Reconstruction
 %  Yifei Fan & Jonathan Jones
 %  April 17, 2016
 
@@ -14,7 +14,10 @@ addpath('includes');
 %% Read in the signal
 [x,fs] = audioread('Signal.wav');
 
-ENCODING_METHOD = 5;
+ENCODING_METHOD = 6;
+if exist('encoding_method.mat', 'file') == 2
+    load('encoding_method.mat', 'ENCODING_METHOD');
+end
 sigFn = sprintf('signal_encoded%u.mat', ENCODING_METHOD);
 
 %% Create the chirp signal

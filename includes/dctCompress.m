@@ -1,5 +1,4 @@
 function [DCTcoeffs, INDcoeffs] = dctCompress(signal, win, fs, cR)
-
 % function [DCTcoeffs, INDcoeffs] = dctCompress(signal, win, fs, compressRatio)
 %
 % This function demonstrates audio compression using DCT%
@@ -15,22 +14,25 @@ function [DCTcoeffs, INDcoeffs] = dctCompress(signal, win, fs, cR)
 %                       matrix: each row corresponds to the kept dct
 %                       coefficients
 %  - INDcoeffs          indices of the kept DCT coefficients
-%
 
-if (size(signal,2)>1) signal = (sum(signal,2)/2); end
-windowLength = round(win * fs); curPos = 1; L = length(signal);
-dctToKeep = round((cR/2) * windowLength);
-% note that compression ratio is the half of the desired ratio since
-% the compression process returns TWO matrices (dct coefficients and
-% indeces)
-numOfFrames = floor((L-windowLength)/windowLength) + 1;
+    if (size(signal,2)>1)
+        signal = (sum(signal,2)/2);
+    end
 
-for i=1:numOfFrames % for each frame
-    frame  = signal(curPos:curPos+windowLength-1);
-    Dct = dct(frame);   % DCT
-    [~, Isort] = sort(abs(Dct), 'descend'); % sort DCT coeffs
-    Isort = Isort(1:dctToKeep);             % keep indeces
-    DCTcoeffs(i, :) = Dct(Isort);
-    INDcoeffs(i, :) = Isort;
-    curPos = curPos + windowLength;
+    windowLength = round(win * fs); curPos = 1; L = length(signal);
+    dctToKeep = round((cR/2) * windowLength);
+    % note that compression ratio is the half of the desired ratio since
+    % the compression process returns TWO matrices (dct coefficients and
+    % indeces)
+    numOfFrames = floor((L-windowLength)/windowLength) + 1;
+    for i=1:numOfFrames % for each frame
+        frame  = signal(curPos:curPos+windowLength-1);
+        Dct = dct(frame);   % DCT
+        [~, Isort] = sort(abs(Dct), 'descend'); % sort DCT coeffs
+        Isort = Isort(1:dctToKeep);             % keep indeces
+        DCTcoeffs(i, :) = Dct(Isort);
+        INDcoeffs(i, :) = Isort;
+        curPos = curPos + windowLength;
+    end
+    disp(DCTcoeffs)
 end

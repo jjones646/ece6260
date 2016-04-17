@@ -26,6 +26,8 @@ switch enmethod
         cR = 0.4; % required compression ratio
         win = 0.25; % window size in second
         dsfreq = fs/dsrate; % frequency of the input
+        DCTcoeffs = [];
+        INDcoeffs = [];
         [DCTcoeffs, INDcoeffs] = dctCompress(x11, win, dsfreq, cR);
         DCTcoeffs = single(DCTcoeffs); INDcoeffs = uint16(INDcoeffs);
         cR = single(cR); win = single(win); dsfreq = single(dsfreq);
@@ -44,7 +46,8 @@ switch enmethod
     case 4
         %% Method 4: Lloyd Algorithm
         bitrate = 3;
-        [indices, C] = kmeans(x11, 2^bitrate, 'MaxIter', 1000);
+        whos
+        [indices, C] = kmeans(x11', 2^bitrate, 'MaxIter', 1000);
         C = single(C);
         indices = indices - 1; % k-mean cluster label: from 1 to 2^bitrate
         
