@@ -2,7 +2,7 @@
 %  Yifei Fan & Jonathan Jones
 %  April 17, 2016
 %
-% ** MLK's speech should be: 'x1' **
+% === MLK's speech should be: 'x1' ===
 
 %% Specify the downsampling and encoding method
 dsmethod = 1; % downsampling method: 1-decimate; 2-resample
@@ -55,7 +55,6 @@ switch enmethod
         bitrate = min(bitrate, 7); % the maximum bitrate is set to be 7
         [x12, indices] = uniform_quantizer(x11, bitrate, min(x11), max(x11)); % minimum bit rate should be 4
         x11m = [min(x11) max(x11)];
-        indices = uint8(indices);
         
         save(sigFn, 'x11m', 'indices', 'bitrate', '-append');
     case 6
@@ -78,7 +77,7 @@ switch enmethod
         
         save(sigFn, 'es', 'as', 'p', 'x11len', '-append');
     otherwise
-        disp('Please specify the encoding method: enmethod = {1,2..5}');
+        error('Please specify the encoding method: enmethod = {1,2..7}');
 end
 
 %% Save additional info to the mat file
