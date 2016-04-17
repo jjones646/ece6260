@@ -3,8 +3,11 @@
 %  April 17, 2016
 
 function signalDecode(encodedFile, outFile)
+
 %% Load the signal's encoded parameters from the given file
 load(encodedFile);
+
+fprintf('  decoding ''%s''\n', encodedFile);
 
 %% Compute the chirp signal
 chirp = chp(1) * makeChirp(chp(2),chp(3),chp(4),fs);

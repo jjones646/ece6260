@@ -39,11 +39,7 @@ switch enmethod
         error('Please specify the encoding method: enmethod = {1,2..7}');
 end
 
-if dsmethod == 1
-    x14 = interp(x13, 3);
-else
-    x14 = resample(x13, fs, dsfreq);
-end
+x14 = interp(x13, 3);
 
 % add/remove zero padding if needed
 if length(x14) < xlen

@@ -2,9 +2,6 @@
 %  Yifei Fan & Jonathan Jones
 %  April 17, 2016
 
-%% Setup environment
-close all; clear all; clc;
-
 % cd into the directory where this script is
 cd(fileparts(mfilename('fullpath')));
 
@@ -12,34 +9,46 @@ cd(fileparts(mfilename('fullpath')));
 addpath('includes');
 
 %% Set encoding method to use for speech
-% Encoding Methods:
-%   1 = DCT
-%   2 = mu-law
-%   3 = a-law
-%   4 = Lloyd
-%   5 = uniform quantizer
-%   6 = feedback adaptive quantizer
+% set the method that we will use
 method = 5;
 
 % override the encoding method if we're using the 'runall.m' script
 if exist('tmp_encoding_method.mat','file') == 2
     load('tmp_encoding_method.mat','method');
+else
+    % clear the workspace if not called from 'runall.m'
+    close all; clear all; clc;
 end
+
+fprintf('Running encoding & decoding steps\n');
 
 %% Construct the encoded/decoded filenames that will be exported
 fnEncoded = sprintf('Signal_encoded%u.mat', method);
 fnDecoded = sprintf('Signal_decoded%u.wav', method);
 
+%% Get and show the true signal file we're using
+signalFile = which('Signal.wav');
+% get the true original filesize
+origBytes = subsref(dir(signalFile), substruct('.','bytes'));
+fprintf('  using ''%s''\n    - %u bytes\n', signalFile, origBytes);
+
 %% Encode the signal
 % writes the reconstructed signal to the given filename
-signalEncode('Signal.wav', fnEncoded, method);
+signalEncode(signalFile, fnEncoded, method);
+
+% show size results
+encodedBytes = subsref(dir(fnEncoded), substruct('.','bytes'));
+compRatio = 1-encodedBytes/origBytes;
+fprintf('  saved to ''%s''\n', fnEncoded);
+fprintf('    - %u bytes\n', encodedBytes);
+fprintf('    - %.2f%% space savings\n', compRatio*100);
 
 %% Flush ALL memory, storing the method to disk temporarily
 save('tmp_speech_method.mat', 'method');
+fprintf('  == Clearing MATLAB Workspace ==\n');
+clear all;
 
-clear all; % clear all matlab variables
-
-% load our method back so we can add it to the filenames
+% load our method back so we can add it to the output filenames
 load('tmp_speech_method.mat', 'method');
 delete('tmp_speech_method.mat'); % cleanup
 
@@ -53,3 +62,7 @@ clear method
 %% Decode the signal
 % writes the reconstructed signal to the given filename
 signalDecode(fnEncoded, fnDecoded);
+
+decodedBytes = subsref(dir(fnDecoded), substruct('.','bytes'));
+fprintf('  saved to ''%s''\n', fnDecoded);
+fprintf('    - %u bytes\n\n', decodedBytes);

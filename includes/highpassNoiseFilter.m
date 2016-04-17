@@ -9,7 +9,7 @@ persistent Hd;
 
 if isempty(Hd)
     
-    Fstop = 4150;   % Stopband Frequency
+    Fstop = 3900;   % Stopband Frequency
     Fpass = 4600;   % Passband Frequency
     Astop = 60;     % Stopband Attenuation (dB)
     Apass = 3;      % Passband Ripple (dB)

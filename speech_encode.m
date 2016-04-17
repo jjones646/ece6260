@@ -5,18 +5,13 @@
 % === MLK's speech should be: 'x1' ===
 
 %% Specify the downsampling and encoding method
-dsmethod = 1; % downsampling method: 1-decimate; 2-resample
 enmethod = ENCODING_METHOD; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd, 5-uniform quantizer, 6-feedback adaptive quantizer
 
+% store length
 xlen = numel(x1);
 
-% Down sampling
-if dsmethod == 1
-    x11 = decimate(x1, 3); % down sampled signal
-else
-    dsfreq = 4000; % down sampling frequency
-    x11 = resample(x1, dsfreq, fs);
-end
+% down sample
+x11 = decimate(x1,3);
 
 %% Encoder for MLK's speech
 switch enmethod
@@ -80,5 +75,5 @@ switch enmethod
 end
 
 %% Save additional info to the mat file
-dsmethod = uint8(dsmethod); enmethod = uint8(enmethod);
-save(outFile, 'enmethod', 'dsmethod', 'xlen', '-append');
+enmethod = uint8(enmethod);
+save(outFile, 'enmethod', 'xlen', '-append');

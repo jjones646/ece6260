@@ -4,8 +4,13 @@
 
 function signalEncode(signalFile, outFile, method)
 
+% method names dictionary
+METHODS = {'DCT', 'μ-law', 'A-law', 'Lloyd''s algorithm', 'Uniform Quantizer',...
+    'Adaptive Quantization', 'LPC'};
 % set this so the other scripts will have it
 ENCODING_METHOD = method;
+
+fprintf('  encoding signal using method: %s\n', METHODS{method});
 
 %% Read in the signal
 [x,fs] = audioread(signalFile);

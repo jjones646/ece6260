@@ -34,5 +34,4 @@ function [DCTcoeffs, INDcoeffs] = dctCompress(signal, win, fs, cR)
         INDcoeffs(i, :) = Isort;
         curPos = curPos + windowLength;
     end
-    disp(DCTcoeffs)
 end
