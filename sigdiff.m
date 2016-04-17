@@ -21,14 +21,14 @@ figure('units','normalized','outerposition',[0 0 1 1])
 %% Iterate over all methods, plotting each one
 for method=1:7
     subplot(2,4,method);
-    % original power density
-    h = plot(poxx);
+    % original signal
+    h = plot(poxx); hold on;
     set(h,'color',[0 0 1 .25]);
-    hold on;
-    % reconstructed power density
+    % reconstructed signal
     [x,fs] = audioread(sprintf('Signal_decoded%u.wav',method));
+    sqnr = 10*log10(norm(x)^2/norm(ox-x)^2);
     pxx = psd(spectrum.periodogram,x,'Fs',fs,'NFFT',length(x));
     h = plot(pxx);
-    set(h,'color',[.8 0 0 .08]);
-    title(METHODS{method});
+    set(h,'color',[.8 0 0 .15]);
+    title(sprintf('%s (SQNR: %.2f dB)',METHODS{method},sqnr));
 end

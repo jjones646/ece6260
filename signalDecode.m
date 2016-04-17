@@ -14,17 +14,17 @@ chirp = chp(1) * makeChirp(chp(2),chp(3),chp(4),fs);
 chirp = fftFilter(chirp, fs, 5500, 6500);
 
 %% Construct the morse code beeps from a string message
-morse = .8*makeMorse(msg);
+morse = mcAmp*makeMorse(mcMsg);
 % zero pad from the start of the signal, and also at the end
-morse = [zeros(1,msg_i0) morse];
+morse = [zeros(1,mcTs) morse];
 morse(end:xlen) = 0;
 % small averaging filter
-winSz = 7; b = (1/winSz)*ones(1,winSz);
+winSz = 5; b = (1/winSz)*ones(1,winSz);
 morse = filter(b,1,morse);
-morse = fftFilter(morse, fs, 3800, 4100);
+morse = fftFilter(morse, fs, 3250, 4750);
 
 %% Generate background noise using the given dist
-noise = 2.2*normrnd(pd(1),pd(2),1,xlen);
+noise = bgn(1)*normrnd(bgn(2),bgn(3),1,xlen);
 noise = highpassNoiseFilter(noise);
 
 %% Get the compressed speech
@@ -41,7 +41,7 @@ diffInd = abs(xlen-length(morse));
 morse(end+1:end+diffInd) = 0;
 
 %% Construct the signal from all pieces
-reconstructed = chirp + noise + morse + speech;
+reconstructed = chirp + noise + morse + 1.2*speech;
 
 %% Write out the decoded signal
 audiowrite(outFile, reconstructed, fs);

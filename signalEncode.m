@@ -19,19 +19,20 @@ save(outFile, 'fs');
 
 %% Create the chirp signal
 % 4 parameters for chirp equation
-chp = [.4 .5 6000 100];
+chp = [.38 .5 6000 100];
 save(outFile, 'chp', '-append');
 
 %% Create the morse code signal
 % filter & decode the morse beeps into a string
-sMorse = fftFilter(x,fs,3800,4100);
-[msg, msg_i0] = deMorse(sMorse);
-save(outFile, 'msg', 'msg_i0', '-append');
+mcAmp = .8;
+morse = fftFilter(x,fs,3800,4100);
+[mcMsg, mcTs] = deMorse(morse);
+save(outFile, 'mcMsg', 'mcTs', 'mcAmp', '-append');
 
 %% Create the background noise
-% sigma & mu for pdf of noise
-pd = [.0163 .0325];
-save(outFile, 'pd', '-append');
+% [ amplitude, sigma, mu ]
+bgn = [2.25, .0163, .0325];
+save(outFile, 'bgn', '-append');
 
 %% Encode the speech
 % the script we call expects 'x1' to already be set
