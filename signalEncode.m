@@ -19,7 +19,7 @@ save(outFile, 'fs');
 
 %% Create the chirp signal
 % 4 parameters for chirp equation
-chp = [.38 .5 6000 100];
+chp = [.4 .5 6000 100];
 save(outFile, 'chp', '-append');
 
 %% Create the morse code signal

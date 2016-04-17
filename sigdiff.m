@@ -16,7 +16,7 @@ METHODS = {'DCT', 'μ-law', 'A-law', 'Lloyd''s algorithm', 'Uniform Quantizer',.
 poxx = psd(spectrum.periodogram,ox,'Fs',ofs,'NFFT',length(ox));
 
 % make fullscreen figure
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('units','normalized','outerposition',[0 0 1 1]);
 
 %% Iterate over all methods, plotting each one
 for method=1:7

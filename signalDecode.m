@@ -41,7 +41,7 @@ diffInd = abs(xlen-length(morse));
 morse(end+1:end+diffInd) = 0;
 
 %% Construct the signal from all pieces
-reconstructed = chirp + noise + morse + 1.2*speech;
+reconstructed = chirp + noise + morse + speech;
 
 %% Write out the decoded signal
 audiowrite(outFile, reconstructed, fs);

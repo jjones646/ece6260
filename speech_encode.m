@@ -11,7 +11,7 @@ enmethod = ENCODING_METHOD; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd
 xlen = numel(x1);
 
 % down sample
-x11 = decimate(x1,3);
+x11 = decimate(x1,2);
 
 %% Encoder for MLK's speech
 switch enmethod
@@ -45,7 +45,7 @@ switch enmethod
         save(outFile, 'C', 'indices', 'bitrate', '-append');
     case 5
         %% Method 5: Uniform Quantizer
-        bitrate = 4;
+        bitrate = 3;
         bitrate = min(bitrate, 7); % the maximum bitrate is set to be 7
         [x12, indices] = uniform_quantizer(x11, bitrate, min(x11), max(x11)); % minimum bit rate should be 4
         x11m = [min(x11) max(x11)];

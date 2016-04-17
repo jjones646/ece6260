@@ -10,14 +10,11 @@ addpath('includes');
 
 %% Set encoding method to use for speech
 % set the method that we will use
-method = 5;
+method = 4;
 
 % override the encoding method if we're using the 'runall.m' script
 if exist('tmp_encoding_method.mat','file') == 2
     load('tmp_encoding_method.mat','method');
-else
-    % clear the workspace if not called from 'runall.m'
-    close all; clear all; clc;
 end
 
 fprintf('Running encoding & decoding steps\n');
@@ -57,7 +54,7 @@ fnEncoded = sprintf('Signal_encoded%u.mat', method);
 fnDecoded = sprintf('Signal_decoded%u.wav', method);
 
 % now clear the method again before entering into decoding
-clear method
+% clear method
 
 %% Decode the signal
 % writes the reconstructed signal to the given filename
@@ -66,3 +63,17 @@ signalDecode(fnEncoded, fnDecoded);
 decodedBytes = subsref(dir(fnDecoded), substruct('.','bytes'));
 fprintf('  saved to ''%s''\n', fnDecoded);
 fprintf('    - %u bytes\n\n', decodedBytes);
+
+[ox,ofs] = audioread('Signal.wav');
+poxx = psd(spectrum.periodogram,ox,'Fs',ofs,'NFFT',length(ox));
+figure('units','normalized','outerposition',[0 0 1 1])
+% original signal
+h = plot(poxx); hold on;
+set(h,'color',[0 0 1 .25]);
+% reconstructed signal
+[x,fs] = audioread(sprintf('Signal_decoded%u.wav',method));
+sqnr = 10*log10(norm(x)^2/norm(ox-x)^2);
+pxx = psd(spectrum.periodogram,x,'Fs',fs,'NFFT',length(x));
+h = plot(pxx);
+set(h,'color',[.8 0 0 .15]);
+title(sprintf('Method %u (SQNR: %.2f dB)',method,sqnr));
