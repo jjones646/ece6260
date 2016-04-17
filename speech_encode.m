@@ -44,7 +44,6 @@ switch enmethod
     case 4
         %% Method 4: Lloyd Algorithm
         bitrate = 3;
-        whos
         [indices, C] = kmeans(x11', 2^bitrate, 'MaxIter', 1000);
         C = single(C);
         indices = indices - 1; % k-mean cluster label: from 1 to 2^bitrate
