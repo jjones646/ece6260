@@ -21,6 +21,11 @@ addpath('includes');
 %   6 = feedback adaptive quantizer
 method = 5;
 
+% override the encoding method if we're using the 'runall.m' script
+if exist('tmp_encoding_method.mat','file') == 2
+    load('tmp_encoding_method.mat','method');
+end
+
 %% Construct the encoded/decoded filenames that will be exported
 fnEncoded = sprintf('Signal_encoded%u.mat', method);
 fnDecoded = sprintf('Signal_decoded%u.wav', method);

@@ -34,7 +34,7 @@ switch enmethod
         end
     case 7
         % Method 7: LPC
-        x13 = lpc_reconstruct( es, as, x11len, fs );
+        x13 = lpc_reconstruct(es, as, x11len, fs);
     otherwise
         error('Please specify the encoding method: enmethod = {1,2..7}');
 end

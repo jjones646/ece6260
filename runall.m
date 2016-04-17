@@ -5,15 +5,9 @@
 %% Setup environment
 close all; clear all; clc;
 
-% cd into the directory where this script is
-cd(fileparts(mfilename('fullpath')));
-
-% add the 'includes' directory to the path for using the filters
-addpath('includes');
-
 %% Iterate over all methods
-for ENCODING_METHOD=1:7
-    save('tmp_encoding_method.mat','ENCODING_METHOD');
+for method=1:7
+    save('tmp_encoding_method.mat','method');
     run('project_main.m');
 end
 
