@@ -70,7 +70,7 @@ switch enmethod
     case 7
         %% Method 7: LPC
         p = 10; % prediction order
-        [ es, as ] = lpc_analysis( x11, fs, p );
+        [ es, as ] = lpc_analysis(x11', fs, p);
         % Quantization for error signal
         rate = 3;
         es = uniform_quantizer(es, rate, min(es(:)), max(es(:)));
