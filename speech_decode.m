@@ -18,11 +18,12 @@ switch enmethod
         x13 = pcma2lin(double(x12));
     case 4
         % Method 4: Lloyd Algorithm
-        indices = indices + 1;
+        indices = double(indices + 1);
         x12 = C(indices);
         x13 = double(x12);
     case 5
         % Method 5: Uniform Quantizer
+        indices = double(indices);
         x13 = x11m(1) + (x11m(2)-x11m(1))/(2^bitrate)*(0.5+indices);
         x13 = double(x13);
     case 6

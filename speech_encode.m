@@ -46,7 +46,7 @@ switch enmethod
         bitrate = 3;
         [indices, C] = kmeans(x11', 2^bitrate, 'MaxIter', 1000);
         C = single(C);
-        indices = indices - 1; % k-mean cluster label: from 1 to 2^bitrate
+        indices = uint8(indices - 1); % k-mean cluster label: from 1 to 2^bitrate
         
         save(sigFn, 'C', 'indices', 'bitrate', '-append');
     case 5
@@ -64,6 +64,7 @@ switch enmethod
         alpha = 0.99;
         [yq, indices] = feedback_quantizer(x11, bitrate, alpha);
         x11m = [min(x11) max(x11)];
+        indices = uint8(indices);
         
         save(sigFn, 'x11m', 'indices', 'bitrate', 'alpha', '-append');
     case 7
