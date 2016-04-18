@@ -26,6 +26,7 @@ switch enmethod
     case 6
         % Method 6: Feedback Adaptive Quantizer
         G0 = 1;
+        indices = double(indices);
         Gs = ones(size(indices));
         sigmas = zeros(size(indices));
         yq = x11m(1) + (x11m(2)-x11m(1))/(2^bitrate)*(0.5+indices);
