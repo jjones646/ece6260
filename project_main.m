@@ -2,78 +2,71 @@
 %  Yifei Fan & Jonathan Jones
 %  April 17, 2016
 
-%% Setup environment
-close all; clear all; clc;
-
 % cd into the directory where this script is
 cd(fileparts(mfilename('fullpath')));
 
 % add the 'includes' directory to the path for using the filters
 addpath('includes');
 
-%% Read in the signal
-[x,fs] = audioread('Signal.wav');
+%% Set encoding method to use for speech
+% set the method that we will use
+method = 4;
 
-ENCODING_METHOD = 6;
-if exist('encoding_method.mat', 'file') == 2
-    load('encoding_method.mat', 'ENCODING_METHOD');
+% override the encoding method if we're using the 'runall.m' script
+if exist('tmp_encoding_method.mat','file') == 2
+    load('tmp_encoding_method.mat','method');
 end
-sigFn = sprintf('signal_encoded%u.mat', ENCODING_METHOD);
 
-%% Create the chirp signal
-% Encoding
-chp.a = .4;
-chp.v = [.5 6000 100];
-save(sigFn, 'chp');
+fprintf('Running encoding & decoding steps\n');
 
-% Decode
-% load(sigFn, 'chp');
-% compute the chirp signal
-chirp = chp.a*makeChirp(chp.v(1),chp.v(2),chp.v(3),fs);
-chirp = fftFilter(chirp, fs, 5500, 6500);
+%% Construct the encoded/decoded filenames that will be exported
+fnEncoded = sprintf('Signal_encoded%u.mat', method);
+fnDecoded = sprintf('Signal_decoded%u.wav', method);
 
-%% Create the morse code signal
-% Encoding
-sMorse = fftFilter(x,fs,3800,4100);
-[msg, msg_i0] = deMorse(sMorse); % ascii string message & starting sample
-save(sigFn, 'msg', 'msg_i0', '-append');
+%% Get and show the true signal file we're using
+signalFile = which('Signal.wav');
+% get the true original filesize
+origBytes = subsref(dir(signalFile), substruct('.','bytes'));
+fprintf('  using ''%s''\n    - %u bytes\n', signalFile, origBytes);
 
-% Decoding
-% load(sigFn, 'msg');
-morse = .8*makeMorse(msg);
-% zero pad from the start of the signal, and also at the end
-morse = [zeros(1,msg_i0) morse];
-morse(end:length(sMorse)) = 0;
-winSz = 7; b = (1/winSz)*ones(1,winSz);
-morse = filter(b,1,morse);
-morse = fftFilter(morse, fs, 3800, 4100);
+%% Encode the signal
+% writes the reconstructed signal to the given filename
+signalEncode(signalFile, fnEncoded, method);
 
-%% Create the background noise
-% Encoding
-pd = [.0163 .0325];
-save(sigFn, 'pd', '-append');
+% show size results
+encodedBytes = subsref(dir(fnEncoded), substruct('.','bytes'));
+compRatio = 1-encodedBytes/origBytes;
+fprintf('  saved to ''%s''\n', fnEncoded);
+fprintf('    - %u bytes\n', encodedBytes);
+fprintf('    - %.2f%% space savings\n', compRatio*100);
 
-% Decoding
-% load(sigFn, 'pd');
-noise = 2.2*normrnd(pd(1),pd(2),1,length(x));
-noise = highpassNoiseFilter(noise);
+%% Flush ALL memory, storing the method to disk temporarily
+save('tmp_speech_method.mat', 'method');
+fprintf('  == Clearing MATLAB Workspace ==\n');
+clear all;
 
-%% Get the compressed speech
-x1 = fftFilter(x,fs,20,3800)';
-run('speech_encode.m');
-run('speech_decode.m');
-% can use 'speech' after speech_decode.m is called
+% load our method back so we can add it to the output filenames
+load('tmp_speech_method.mat', 'method');
+delete('tmp_speech_method.mat'); % cleanup
 
-%% Fixup array lengths
-chirpPeriods = ceil(length(x)/length(chirp));
-chirp = repmat(chirp,1,chirpPeriods);
-chirp = chirp(1:length(x));
-diffInd = abs(length(x)-length(morse));
-morse(end+1:end+diffInd) = 0;
+% reset our filenames
+fnEncoded = sprintf('Signal_encoded%u.mat', method);
+fnDecoded = sprintf('Signal_decoded%u.wav', method);
 
-%% Construct the top half of the signal
-reconstructed = chirp + noise + morse + speech;
+% now clear the method again before entering into decoding
+% clear method
 
-%% Write out the decoded signal
-outfile = sprintf('decoded_signal%u.wav', enmethod);
-audiowrite(outfile, reconstructed, fs);
+%% Decode the signal
+% writes the reconstructed signal to the given filename
+signalDecode(fnEncoded, fnDecoded);
+
+decodedBytes = subsref(dir(fnDecoded), substruct('.','bytes'));
+fprintf('  saved to ''%s''\n', fnDecoded);
+fprintf('    - %u bytes\n\n', decodedBytes);
+
+% reconstructed signal
+xOrig = audioread('Signal.wav');
+x = audioread(sprintf('Signal_decoded%u.wav',method));
+sqnr = 10*log10(norm(x)^2/norm(xOrig-x)^2);
+fprintf('Method %u (SQNR: %.2f dB)\n',method,sqnr);
+
