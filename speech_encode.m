@@ -11,7 +11,7 @@ enmethod = ENCODING_METHOD; % encoding method: 1-DCT, 2-mu-law, 3-a-law, 4-Lloyd
 xlen = numel(x1);
 
 % down sample
-x11 = decimate(x1,2);
+x11 = decimate(x1,3);
 
 %% Encoder for MLK's speech
 switch enmethod
